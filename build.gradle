@@ -33,3 +33,5 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 	options.release.set(11)
 }
+sourceCompatibility = JavaVersion.VERSION_14
+targetCompatibility = JavaVersion.VERSION_14
