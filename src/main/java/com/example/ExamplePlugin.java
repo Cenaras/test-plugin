@@ -1,5 +1,6 @@
 package com.example;
 
+import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
 import com.google.inject.Provides;
 import javax.inject.Inject;
@@ -7,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.ScriptID;
-import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.events.WidgetLoaded;
@@ -17,9 +17,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.plugins.party.messages.StatusUpdate;
-
-import java.util.Arrays;
 
 @Slf4j
 @PluginDescriptor(
@@ -62,7 +59,7 @@ public class ExamplePlugin extends Plugin
 			// TODO - cache
 			this.playerInfo = new PlayerInfo();
 		}
-
+		MonsterInfo vorkath = MonsterInfo.getMonsterInfo(8059);
 		playerInfo.updateStats(client.getRealSkillLevels());
 	}
 
