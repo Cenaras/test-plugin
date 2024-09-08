@@ -3,7 +3,7 @@ package com.example.dps;
 // https://oldschool.runescape.wiki/w/Damage_per_second/Melee
 
 import com.example.enums.AttackType;
-import com.example.GearSetup;
+import com.example.gear.GearSetup;
 import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
 import com.example.enums.WeaponStyle;
@@ -14,8 +14,8 @@ public class MeleeDPSCalculator implements DPSCalculator {
 
     // Pass to overall getDPSMethod and let it pass downwards...
 
-    private int effectiveStrengthLevel(PlayerInfo player, GearSetup setup) {
-        int accStr = 0;
+    private double effectiveStrengthLevel(PlayerInfo player, GearSetup setup) {
+        double accStr = 0;
         accStr += player.getStrLevel();
         accStr += player.getStrBoost();
         accStr *= setup.getStrModifier();
@@ -30,20 +30,18 @@ public class MeleeDPSCalculator implements DPSCalculator {
         return accStr;
     }
 
-    private int maxHit(PlayerInfo player, GearSetup setup) {
-        int maxHit = 0;
+    private double maxHit(PlayerInfo player, GearSetup setup) {
+        double maxHit = 0;
         maxHit += effectiveStrengthLevel(player, setup);
         // * (equipment str bonus + 64)
         maxHit += 320;
         maxHit /= 640;
         // * target specific multipliers
-
-
         return maxHit;
     }
 
-    private int effectiveAttackLevel(PlayerInfo player, GearSetup setup) {
-        int accAtt = 0;
+    private double effectiveAttackLevel(PlayerInfo player, GearSetup setup) {
+        double accAtt = 0;
         accAtt += player.getAttLevel();
         accAtt += player.getAttBoost();
         accAtt *= setup.getAttModifier();
@@ -55,11 +53,12 @@ public class MeleeDPSCalculator implements DPSCalculator {
         }
         accAtt += 8;
         // If all void, multiply with 1.1
+        System.out.println("accAtt: " + accAtt);
         return accAtt;
     }
 
-    private int attackRoll(PlayerInfo player, GearSetup setup) {
-        int attackRoll = 0;
+    private double attackRoll(PlayerInfo player, GearSetup setup) {
+        double attackRoll = 0;
         attackRoll += effectiveAttackLevel(player, setup);
         // * (equipment attack bonus + 64)
         // * target specific gear bonus
@@ -68,13 +67,13 @@ public class MeleeDPSCalculator implements DPSCalculator {
 
     // TODO: I think we skip step 5 since we are not hitting players.
 
-    private int defenseRoll(AttackType style, MonsterInfo monster) {
+    private double defenseRoll(AttackType style, MonsterInfo monster) {
         return (monster.getDefenseLevel() + 9) * (monster.getStyleDefenseBonus(style) + 64);
     }
 
-    private int hitChance(PlayerInfo player, GearSetup setup, MonsterInfo monster) {
-        int attRoll = attackRoll(player, setup);
-        int defRoll = defenseRoll(setup.getAttackType(), monster);
+    private double hitChance(PlayerInfo player, GearSetup setup, MonsterInfo monster) {
+        double attRoll = attackRoll(player, setup);
+        double defRoll = defenseRoll(setup.getAttackType(), monster);
         if (attRoll > defRoll) {
             return 1 - ((defRoll + 2) / (2 * (attRoll + 1)));
         } else {
@@ -85,9 +84,9 @@ public class MeleeDPSCalculator implements DPSCalculator {
 
     @Override
     public double calculateDPS(PlayerInfo player, GearSetup setup, MonsterInfo monster) {
-        int maxHit = maxHit(player, setup);
-        int avgDmgPrAttack = hitChance(player, setup, monster) * ((maxHit / 2) + (1 / (maxHit + 1)));
-
+        double maxHit = maxHit(player, setup);
+        double avgDmgPrAttack = hitChance(player, setup, monster) * ((maxHit / 2) + (1 / (maxHit + 1)));
+        System.out.println("AvvDmpPrAttack: " + avgDmgPrAttack);
         return avgDmgPrAttack / (setup.getWeaponAttackSpeed() * 0.6);
 
     }

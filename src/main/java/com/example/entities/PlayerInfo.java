@@ -1,6 +1,8 @@
 package com.example.entities;
 
 import com.example.items.CollectionLogItem;
+import lombok.Getter;
+import lombok.Setter;
 import net.runelite.api.Skill;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.List;
 /**
  * Information about the player stats and unlocks.
  */
+@Getter
 public class PlayerInfo {
     private final List<CollectionLogItem> headItems = new ArrayList<>();
     private final List<CollectionLogItem> capeItems = new ArrayList<>();
@@ -24,11 +27,17 @@ public class PlayerInfo {
     private final List<CollectionLogItem> ammoItems = new ArrayList<>();
 
 
-    private int strLevel = 0;
-    private int attLevel = 0;
-    private int rngLevel = 0;
-    private int mageLevel = 0;
-    private int prayLevel = 0;
+    // TODO: Read from player
+    @Setter
+    private int strBoost = 0;
+    private int attBoost = 0;
+
+    @Getter
+    private int attLevel = 99;
+    private int strLevel = 99;
+    private int rngLevel = 99;
+    private int mageLevel = 99;
+    private int prayLevel = 99;
 
 
     /**
@@ -72,23 +81,6 @@ public class PlayerInfo {
                     break;
             }
         }
-    }
-
-
-    public int getStrLevel() {
-        return 0;
-    }
-
-    public int getStrBoost() {
-        return 0;
-    }
-
-    public int getAttLevel() {
-        return 0;
-    }
-
-    public int getAttBoost() {
-        return 0;
     }
 
 

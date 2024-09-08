@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
+import com.example.ui.TestPanel;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,12 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.ClientToolbar;
+import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.util.ImageUtil;
+
+import java.awt.image.BufferedImage;
+import java.util.Map;
 
 @Slf4j
 @PluginDescriptor(
@@ -35,13 +42,30 @@ public class ExamplePlugin extends Plugin
 	@Inject
 	private ExampleConfig config;
 
+	@Inject
+	private ClientToolbar clientToolBar;
 
-	private PlayerInfo playerInfo;
+	private PlayerInfo playerInfo = new PlayerInfo();
+
+	private static final BufferedImage ICON = ImageUtil.loadImageResource(ExamplePlugin.class, "example.png");
 
 	@Override
-	protected void startUp() throws Exception
-	{
+	protected void startUp() {
+		Map<Integer, MonsterInfo> monsterInfo = MonsterInfo.parseMonsters();
+
 		log.info("Example started!");
+		TestPanel panel = new TestPanel(monsterInfo, playerInfo);
+		NavigationButton navButton = NavigationButton.builder()
+				.tooltip("Iron DPS Calc")
+				.icon(ICON)
+				.priority(6)
+				.panel(panel)
+				.build();
+
+
+		clientToolBar.addNavigation(navButton);
+
+
 	}
 
 	@Override
@@ -54,12 +78,11 @@ public class ExamplePlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged gameStateChanged)
 	{
-		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-		{
-			// TODO - cache
-			this.playerInfo = new PlayerInfo();
-		}
-		MonsterInfo vorkath = MonsterInfo.getMonsterInfo(8059);
+//		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
+//		{
+//			// TODO - cache
+//		}
+
 		playerInfo.updateStats(client.getRealSkillLevels());
 	}
 

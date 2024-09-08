@@ -37,7 +37,8 @@ public class MonsterInfo {
 
     private static Map<Integer, MonsterInfo> monstersMap = null;
 
-     // TODO: Separate class for JSON parsing formats
+    // TODO: Separate class for JSON parsing formats
+
 
     public int getDefenseLevel() {
         return 0;
@@ -47,7 +48,7 @@ public class MonsterInfo {
         return 0;
     }
 
-    private static Map<Integer, MonsterInfo> parseMonsters() {
+    public static Map<Integer, MonsterInfo> parseMonsters() {
         String monsterContent;
         StringBuilder b = new StringBuilder();
         List<String> lines;
@@ -80,6 +81,7 @@ public class MonsterInfo {
 
         return monstersMap.get(id);
     }
+
 }
 
 class Skills {

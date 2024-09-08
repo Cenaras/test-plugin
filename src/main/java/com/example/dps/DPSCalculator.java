@@ -1,6 +1,6 @@
 package com.example.dps;
 
-import com.example.GearSetup;
+import com.example.gear.GearSetup;
 import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
 
