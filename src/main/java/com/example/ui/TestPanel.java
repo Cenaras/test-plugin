@@ -1,11 +1,13 @@
 package com.example.ui;
 
+import com.example.CollectionLog;
 import com.example.dps.DPSCalculator;
 import com.example.dps.MeleeDPSCalculator;
 import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
 import com.example.gear.GearSetup;
 import com.example.gear.NaiveGearGenerator;
+import com.example.items.CollectionLogItem;
 import net.runelite.client.ui.PluginPanel;
 
 import javax.inject.Inject;
@@ -22,7 +24,7 @@ public class TestPanel extends PluginPanel  {
     private final Map<String, Integer> nameVersionToId = new HashMap<>();
 
     // TODO: Only pass strings to SearchBar, move monsterInfo logic into this class.
-    public TestPanel(Map<Integer, MonsterInfo> monsterInfo, PlayerInfo player) {
+    public TestPanel(Map<Integer, MonsterInfo> monsterInfo, PlayerInfo player, CollectionLog collectionLog) {
         super();
 
         monsterInfo.keySet().forEach(k -> {
@@ -59,11 +61,10 @@ public class TestPanel extends PluginPanel  {
                 System.out.println(selectedMonster.getName());
                 // Invoke the DPS calc with the new monster info from the name,version -> id map
 
-                GearSetup setup = new NaiveGearGenerator().generateGearSetup(player);
+                GearSetup setup = new NaiveGearGenerator().generateGearSetup(collectionLog.getUnlockedItems());
                 double dps = new MeleeDPSCalculator().calculateDPS(player, setup, selectedMonster);
                 System.out.println("DPS:");
                 System.out.println(dps);
-
             }
         });
 

@@ -2,11 +2,14 @@ package com.example;
 
 import com.example.entities.MonsterInfo;
 import com.example.entities.PlayerInfo;
+import com.example.items.CollectionLogItem;
+import com.example.items.StandardItem;
 import com.example.ui.TestPanel;
 import com.google.inject.Provides;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.EquipmentInventorySlot;
 import net.runelite.api.GameState;
 import net.runelite.api.ScriptID;
 import net.runelite.api.events.GameStateChanged;
@@ -26,6 +29,8 @@ import net.runelite.client.util.ImageUtil;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -48,7 +53,7 @@ public class ExamplePlugin extends Plugin
 	@Inject
 	private ClientToolbar clientToolBar;
 
-	private PlayerInfo playerInfo = new PlayerInfo();
+	private final PlayerInfo playerInfo = new PlayerInfo();
 
 	private static final BufferedImage ICON = ImageUtil.loadImageResource(ExamplePlugin.class, "example.png");
 
@@ -57,7 +62,7 @@ public class ExamplePlugin extends Plugin
 		Map<Integer, MonsterInfo> monsterInfo = MonsterInfo.parseMonsters();
 
 		log.info("Example started!");
-		TestPanel panel = new TestPanel(monsterInfo, playerInfo);
+		TestPanel panel = new TestPanel(monsterInfo, playerInfo, collectionLog);
 		NavigationButton navButton = NavigationButton.builder()
 				.tooltip("Iron DPS Calc")
 				.icon(ICON)
@@ -78,10 +83,17 @@ public class ExamplePlugin extends Plugin
 	public void onGameStateChanged(GameStateChanged gameStateChanged) throws IOException, ClassNotFoundException {
 		boolean isLoggedOut = client.getGameState().getState() < GameState.LOADING.getState();
 		if (isLoggedOut) {
-			playerInfo.saveToDisk();
+			collectionLog.saveToDisk();
 		} else {
-			playerInfo = PlayerInfo.loadFromDisk();
+			collectionLog.loadFromDisk();
 			playerInfo.updateStats(client.getRealSkillLevels());
+			System.out.println("All unlocked items:");
+			for (EquipmentInventorySlot slot : collectionLog.getUnlockedItems().keySet()) {
+				for (CollectionLogItem item : collectionLog.getUnlockedItems().get(slot)) {
+					StandardItem cast = (StandardItem) item;
+					System.out.println(cast.getName());
+				}
+			}
 		}
 	}
 
