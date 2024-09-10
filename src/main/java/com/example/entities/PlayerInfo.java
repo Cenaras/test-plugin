@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.runelite.api.Skill;
 
+import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
  * Information about the player stats and unlocks.
  */
 @Getter
-public class PlayerInfo {
+public class PlayerInfo implements Serializable {
     private final List<CollectionLogItem> headItems = new ArrayList<>();
     private final List<CollectionLogItem> capeItems = new ArrayList<>();
     private final List<CollectionLogItem> amuletItems = new ArrayList<>();
@@ -26,8 +28,9 @@ public class PlayerInfo {
     private final List<CollectionLogItem> ringItems = new ArrayList<>();
     private final List<CollectionLogItem> ammoItems = new ArrayList<>();
 
+    private static final String unlockedItemsPath = "./src/main/java/com/example/data/unlocks.ser";
+    private static final long serialVersionUID = 1L;
 
-    // TODO: Read from player
     @Setter
     private int strBoost = 0;
     private int attBoost = 0;
@@ -83,7 +86,6 @@ public class PlayerInfo {
         }
     }
 
-
     public void updateStats(int[] realSkillLevels) {
         this.attLevel = realSkillLevels[Skill.ATTACK.ordinal()];
         this.strLevel = realSkillLevels[Skill.STRENGTH.ordinal()];
@@ -91,5 +93,26 @@ public class PlayerInfo {
         this.mageLevel = realSkillLevels[Skill.MAGIC.ordinal()];
         this.prayLevel = realSkillLevels[Skill.PRAYER.ordinal()];
     }
+
+    // TODO: Make sure that if we add new items from collection log, then the currently unlocked items do not disappear
+
+    // Serialize method
+    public void saveToDisk() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(unlockedItemsPath))) {
+            oos.writeObject(this);
+        } catch (Exception e) {
+            System.err.println("TODO");
+            System.err.println(e.toString());
+        }
+    }
+
+    // Deserialize method
+    public static PlayerInfo loadFromDisk() throws IOException, ClassNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(unlockedItemsPath))) {
+            return (PlayerInfo) ois.readObject();
+        }
+    }
+
+
 }
 

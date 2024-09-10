@@ -18,11 +18,14 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.task.Schedule;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.util.ImageUtil;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 @Slf4j
@@ -62,28 +65,24 @@ public class ExamplePlugin extends Plugin
 				.panel(panel)
 				.build();
 
-
 		clientToolBar.addNavigation(navButton);
-
-
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
-
 		log.info("Example stopped!");
 	}
 
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged gameStateChanged)
-	{
-//		if (gameStateChanged.getGameState() == GameState.LOGGED_IN)
-//		{
-//			// TODO - cache
-//		}
-
-		playerInfo.updateStats(client.getRealSkillLevels());
+	public void onGameStateChanged(GameStateChanged gameStateChanged) throws IOException, ClassNotFoundException {
+		boolean isLoggedOut = client.getGameState().getState() < GameState.LOADING.getState();
+		if (isLoggedOut) {
+			playerInfo.saveToDisk();
+		} else {
+			playerInfo = PlayerInfo.loadFromDisk();
+			playerInfo.updateStats(client.getRealSkillLevels());
+		}
 	}
 
 	@Subscribe

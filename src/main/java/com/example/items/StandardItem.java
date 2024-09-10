@@ -33,6 +33,71 @@ public class StandardItem implements CollectionLogItem {
         return this.slot;
     }
 
+    @Override
+    public int slashBonus() {
+        return this.slashBonus;
+    }
+
+    @Override
+    public int crushBonus() {
+        return this.crushBonus;
+    }
+
+    @Override
+    public int mageBonus() {
+        return this.mageBonus;
+    }
+
+    @Override
+    public int rangeBonus() {
+        return this.rangeBonus;
+    }
+
+    @Override
+    public int stabDefense() {
+        return this.stabBonus;
+    }
+
+    @Override
+    public int slashDefense() {
+        return this.slashDefense;
+    }
+
+    @Override
+    public int crushDefense() {
+        return this.crushDefense;
+    }
+
+    @Override
+    public int mageDefense() {
+        return this.mageDefense;
+    }
+
+    @Override
+    public int rangeDefense() {
+        return this.rangeDefense;
+    }
+
+    @Override
+    public int strBonus() {
+        return this.strBonus;
+    }
+
+    @Override
+    public int rngStrBonus() {
+        return this.rngStrBonus;
+    }
+
+    @Override
+    public int magicStrBonus() {
+        return this.magicStrBonus;
+    }
+
+    @Override
+    public int prayBonus() {
+        return this.prayBonus;
+    }
+
     public StandardItem(EquipmentInventorySlot slot, String name, ItemEquipmentStats equipment) {
         this.slot = slot;
         this.name = name;
